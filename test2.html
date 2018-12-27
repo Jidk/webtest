@@ -1,0 +1,390 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="立即線上預約開戶，輸入我的專屬推薦碼享好康!">
+    <meta name="keywords" content="日盛,新戶,開戶通,行動交易,電子交易,股票開戶,日盛online">
+    <meta name="author" content="">
+    <meta name="format-detection" content="telephone=no">
+
+    <title>日盛證券-揪友開戶享好禮2019</title>
+
+    <link rel="shortcut icon" href="images/favicon.ico" />
+    <link rel="bookmark" href="images/favicon.ico" />
+    <script src="js/jquery-3.2.1.min.js"></script>
+
+    <!--FB-->
+    <meta property="fb:app_id" content="1331179310250409">
+    <meta property="og:title" content="日盛證券-2019揪友開戶活動">
+    <meta property="og:description" content="立即線上預約開戶，輸入我的專屬推薦碼享好康!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jsmarket.jihsun.com.tw/MarketNet/Marketing2019/MGM/index.html">
+    <meta property="og:image" content="https://jsmarket.jihsun.com.tw/marketnet/marketing2019/MGM/images/fb_banner600x315.jpg">
+    <meta property="og:image:width" content="600">
+    <meta property="og:image:height" content="315">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-grid.min.css" rel="stylesheet" type="text/css">
+    <link href="css/callout.css" rel="stylesheet" type="text/css">
+    <link href="css/mgm.css" rel="stylesheet" type="text/css">
+
+    <!--[if IE 9]>
+      <link href="https://cdn.jsdelivr.net/gh/coliff/bootstrap-ie8/css/bootstrap-ie9.min.css" rel="stylesheet">
+    <![endif]-->
+    <!--[if lte IE 8]>
+      <link href="https://cdn.jsdelivr.net/gh/coliff/bootstrap-ie8/css/bootstrap-ie8.min.css" rel="stylesheet">
+      <script src="https://cdn.jsdelivr.net/g/html5shiv@3.7.3"></script>
+    <![endif]-->
+    <script>
+        function IsCommerce() {
+            if ($('#peoCheck').prop("checked") === false) {
+                $('input[name="seller"]').attr('disabled', 'disabled');
+                $('select[name="branch"]').attr('disabled', 'disabled');
+            }
+            else {
+                $('input[name="seller"]').removeAttr('disabled');
+                $('select[name="branch"]').removeAttr('disabled');
+            }
+        }
+
+        $(document).ready(function () {
+            var parameters = function () {
+                var vars = [], hash;
+                var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                for (var i = 0; i < hashes.length; i++) {
+                    hash = hashes[i].split('=');
+                    vars.push(hash[0]);
+                    vars[hash[0]] = hash[1];
+                }
+                return vars;
+            };
+
+            var sourceType = parameters()["sourceType"];
+            $.ajax({
+                type: "POST",
+                url: '../../AccountApplicationSoruceType.ashx',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    code: sourceType,
+                }),
+                datatype: "json",
+                success: function (AjaxResponse) {
+                    var data = JSON.parse(AjaxResponse);
+                    if (data.WR_REPLY_CODE === "0") {
+                        $('input[name="sourceType"]').val(sourceType)
+                    }
+                },
+                error: function (result) {
+                    var responseText = result.responseText;
+                }
+            });
+
+            $('input[name="activityCode"]').val(parameters()["activityCode"])
+
+            $.ajax({
+                type: "POST",
+                url: '../../GetBranch.ashx',
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (AjaxResponse) {
+                    var data = JSON.parse(AjaxResponse);
+                    if (data.WR_REPLY_CODE === "0") {
+                        $('select[name="branch"] option').remove();
+                        $('select[name="branch"]').append($("<option></option>").attr("value", '').text('請選擇分公司'));
+                        $(data.WR_ADVISORY).each(function (index, value) {
+                            $('select[name="branch"]').append($("<option></option>").attr("value", value.Id).text(value.Name + '分公司'));
+                        });
+                    }
+                },
+                error: function (result) {
+                    var responseText = result.responseText;
+                }
+            });
+
+            $('#defaultCheck1').change(function () {
+                $('#defaultCheck2').prop("checked", $('#defaultCheck1').prop("checked"));
+                $('#defaultCheck3').prop("checked", $('#defaultCheck1').prop("checked"));
+                $('#defaultCheck4').prop("checked", $('#defaultCheck1').prop("checked"));
+            });
+
+            IsCommerce();
+            $('#peoCheck').change(IsCommerce);
+
+            $('#btnSend').on('click', function () {
+                var msg = "";
+                if ($("#inputID").val() === "") {
+                    msg += "請輸入身份字號\r\n";
+                }
+
+                if ($("#inputphone").val() === "") {
+                    msg += "請輸入手機號碼\r\n";
+                }
+
+                if ($('input:checked[name="contact"]').length === 0) {
+                    msg += "請選擇可聯繫時段\r\n";
+                }
+
+                if (document.getElementById("peoCheck").checked === true) {
+                    if ($('select[name="branch"] option:selected').text() === "請選擇分公司") {
+                        msg += "請選擇分公司\r\n";
+                    }
+                }
+
+                $('input[name="contacts"]').val('');
+                $('input:checked[name="contact"]').each(function (index, element) {
+                    var text = $('input[name="contacts"]').val();
+                    $('input[name="contacts"]').val(text + (text === "" ? "" : ",") + $(element).val());
+                });
+
+                if ($('input[name="activityCode"]').val() === "") {
+                    msg += "請填寫好友推薦碼\r\n";
+                }
+
+                if ($('input:checked[name="flag"]').length === 0) {
+                    msg += "請勾選同意個人資料告知書及活動注意事項\r\n";
+                }
+
+                sourceType = $('input[name="sourceType"]').val();
+                if (sourceType === undefined || sourceType === null || sourceType === "") {
+                    msg += "請選擇申請來源\r\n";
+                }
+
+                var apKind = parameters()["apKind"];
+                if (apKind === undefined || apKind === null || apKind === "") {
+                    msg += "請選擇平台\r\n";
+                } else {
+                    $('form').append('<input type="hidden" name="apKind" value="' + apKind + '" />');
+                }
+
+                if (msg != "") {
+                    alert(msg);
+                    return false;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '../../AccountApplicationForm.ashx',
+                    contentType: "application/json; charset=utf-8",
+                    datatype: "json",
+                    data: $('form').serialize(),
+                    success: function (AjaxResponse) {
+                        var data = JSON.parse(AjaxResponse);
+                        if (data.WR_REPLY_CODE === "0") {
+                            window.location.href = 'success.html?user=' + escape($('input[name="name"]').val());
+                        }
+                        else {
+                            alert(data.WR_ADVISORY);
+                        }
+                    },
+                    error: function (result) {
+                        var responseText = result.responseText;
+                    }
+                });
+                return true;
+            });
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="https://www.jihsun.com.tw/"><img src="images/logo.png" title="日盛證券" alt="日盛證券"></a>
+                <h1>預約開戶</h1>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="btn" href="eventdescription.html" target="_blank">活動注意事項</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn" data-toggle="modal" data-target="#myModal2">什麼是推薦碼</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Modal 什麼是推薦碼 start-->
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content popwording">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">什麼是推薦碼？</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="line-height: 1.8em;">
+                    <p>推薦碼目前僅提供日盛證券電子交易客戶使用，分享好友推薦開戶使用。其優惠回饋方式依活動辦法為主。</p>
+                    <p>&nbsp;</p>
+                    <p>
+                        如何查詢我的推薦碼？
+                        <ol type="1">
+                            <li>可於本活動網站，輸入您的【身分證】及【電子交易密碼】查詢並分享。</li>
+                            <li>或透過日盛Online APP，點選【日盛好康＞揪友開戶】進行查詢並分享。</li>
+                        </ol>
+                    </p>
+                    <p>
+                        推薦碼使用流程？
+                        <br />
+                        好友可透過2個方式填入您的推薦碼：
+                        <ol type="1">
+                            <li>線上預約開戶的【優惠代碼】欄位輸入</li>
+                            <li>啟用密碼函中的【優惠代碼】欄位輸入</li>
+                        </ol>
+                    </p>
+                    <p>**啟用密碼函目前僅開放使用日盛證券官網或日盛OnlineAPP</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /什麼是推薦碼-->
+    <!-- 大banner -->
+    <div class="container-fluid mb-3 d-none d-md-block">
+        <img src="images/maintopic.png" title="2019揪友開戶享好禮!" alt="">
+    </div>
+    <div class="container-fluid mb-3 d-none d-sm-block d-md-none">
+        <img src="images/maintopic_s.png" title="2019揪友開戶享好禮!" alt="">
+    </div>
+
+    <div class="container">
+        <!-- 已獲得贈點 -->
+        <div class="row justify-content-center mb-2">
+            <div class="col-4 align-self-center text-right">
+                <img src="images/jsunlion.png" alt="太陽獅" title="太陽獅">
+            </div>
+            <div class="col-8 align-self-center">
+                <h3>
+                    <small>2019揪友開戶</small>
+                    <br>您已獲得好友分享
+                    <strong class="text-danger">$300點</strong> 新戶滿額禮
+                </h3>
+            </div>
+        </div>
+        <hr>
+        <!-- /已獲得贈點 -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">請輸入以下資訊，完成開戶後並30天內電子下單滿10萬，即可獲得$300點紅利回饋!</h5>
+                        <!-- 申請表格 -->
+                        <form>
+                            <input type="hidden" name="sourceType" />
+                            <input type="hidden" name="coupon" value="MGM" />
+                            <input type="hidden" name="contacts" />
+                            <div class="form-group row">
+                                <label for="staticEmail" class="col-sm-3 col-form-label"><span class="text-danger">*</span>姓名</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="inputName" name="name" placeholder="請輸入姓名">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="staticEmail" class="col-sm-3 col-form-label"><span class="text-danger">*</span>身份字號</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="inputID" name="uid" placeholder="請輸入ID">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputPassword" class="col-sm-3 col-form-label"><span class="text-danger">*</span>手機號碼</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="inputphone" name="phone" placeholder="請輸入手機號碼">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputPassword" class="col-sm-3 col-form-label"><span class="text-danger">*</span>可聯繫時段</label>
+                                <div class="col-sm-9 mt-2">
+                                    <label class="form-check-label" for="defaultCheck1">
+                                        <input class="form-check-input" type="checkbox" name="contact" value="" id="defaultCheck1">
+                                        皆可
+                                    </label>
+                                    <label class="form-check-label" for="defaultCheck2">
+                                        <input class="form-check-input" type="checkbox" name="contact" value="01" id="defaultCheck2">
+                                        8-12時
+                                    </label>
+                                    <label class="form-check-label" for="defaultCheck3">
+                                        <input class="form-check-input" type="checkbox" name="contact" value="02" id="defaultCheck3">
+                                        13-17時
+                                    </label>
+                                    <label class="form-check-label" for="defaultCheck4">
+                                        <input class="form-check-input" type="checkbox" name="contact" value="03" id="defaultCheck4">
+                                        18-22時
+                                    </label>
+                                    <small class="text-danger"><i class="fas fa-exclamation"></i> 請選擇時段</small>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputPassword" class="col-sm-3 col-form-label"><input class="form-check-input" type="checkbox" name="bySeller" value="" id="peoCheck"> 指定營業員</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="seller" id="jsunpartner" placeholder="請填寫營業員姓名(若無請忽略)">
+                                    <select class="form-control" name="branch">
+                                        <option>請選擇分公司</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputPassword" class="col-sm-3 col-form-label"><span class="text-danger">*</span>好友推薦碼</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" type="text" name="activityCode" placeholder="好友推薦碼" readonly>
+                                </div>
+                            </div>
+
+                            <div class="row justify-content-center">
+                                <div class="col-md-8 text-center mb-2">
+                                    <label class="form-check-label" for="agree">
+                                        <input class="form-check-input" type="checkbox" name="flag" id="agree">
+                                        我已經充分知悉並同意依此運用<a href="http://md.jsun.com/event/Entrance/report.html" target="_blank">個人資料告知書</a>，提供本人資料予以日盛證券為特定目的範圍蒐集、處理及利用及詳讀並接受<a href="eventdescription.html" target="_blank">活動注意事項</a>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" class="btn btn-primary" id="btnSend">確認送出</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <hr>
+        <footer class="row justify-content-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 align-self-center">
+                        <p>
+                            日盛證券股份有限公司 Jih Sun Securities Co.,Ltd.
+                            <br>
+                            台北市南京東路二段 111 號 3樓
+                            <br>
+                            日盛證券許可證照字號 106年金管證總字第0066號
+                            <br>
+                            www.jihsun.com.tw 服務專線 : 0800088268
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <iframe class="float-right" src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FJihsunny%2F&tabs=timeline&width=340&height=120&small_header=false&adapt_container_width=false&hide_cover=false&show_facepile=false&appId" width="100%" height="120" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div><!-- /container -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</body>
+</html>
