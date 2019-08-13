@@ -16,16 +16,20 @@
         ga('send', 'pageview');
 
         window.onload = () => {
-            document.querySelector('#button').addEventListener('click', () => {
-                ga('send', 'event', 'customer-acquire', 'click', 'sign-up');
-            });
+            document.querySelectorAll('a[data-group=ga]').forEach(e => {
+                e.addEventListener('click', () => {
+                    console.log('123');
+                    ga('send', 'event', 'SMART-APP報名連結', 'click', '我要報名');
+                });
+            })
         };
     </script>
     <!-- End Google Analytics -->
 </head>
 
 <body>
-    <button id="button">123</button>
+    <a data-group="ga">123</a> <a>123</a> <a>123</a> <a data-group="ga">123</a>
+
 </body>
 
 </html>
